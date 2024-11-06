@@ -1,4 +1,5 @@
 (function () {
+  console.log("YAYYYY ITS LOADING");
   // Set of detected providers to avoid redundant relays
   const detectedProviders = new Set();
 
@@ -19,8 +20,8 @@
 
   // Exact provider names based on your code
   const providerNames = [
-    "LeatherProvider",
     "XverseProvider",
+    "LeatherProvider",
     "PhantomProvider",
     "OkxProvider",
     "UnisatProvider",
