@@ -119,6 +119,7 @@
     const observer = new MutationObserver(() => {
       providerNames.forEach(providerName => {
         if (window[providerName]) {
+          console.log("PROVIDERRRR ", providerName, window[providerName])
           relayProviderMetadata(providerName);
         }
       });
