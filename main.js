@@ -114,15 +114,14 @@
       "OrangeWalletProviders",
     ];
 
-    providerNames.forEach(providerName => {
-      if (window[providerName]) {
-        relayProviderMetadata(providerName);
-      }
-    });
 
     // Observer to detect dynamically added providers
     const observer = new MutationObserver(() => {
-      providerNames.forEach(relayProviderMetadata);
+      providerNames.forEach(providerName => {
+        if (window[providerName]) {
+          relayProviderMetadata(providerName);
+        }
+      });
     });
 
     observer.observe(document.documentElement, {
