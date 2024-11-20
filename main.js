@@ -1,5 +1,5 @@
 (function () {
-    console.log("YAYYYY ITS LOADING");
+    console.log("YAYYYY ITS LOADING v2");
     const detectedProviders = new Set();
     const acknowledgedProviders = new Set();
     const eventListeners = {};
