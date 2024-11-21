@@ -16,7 +16,7 @@
   ];
 
   // Replace '*' with the actual origin of your embedded app
-  const iframeOrigin = 'https://beta.satsterminal.com'; // Update this to the iframe's origin
+  const iframeOrigin = 'http://localhost:3000'; // Update this to the iframe's origin
 
   // Helper function to get method names from any provider object
   function getProviderMethods(provider) {
@@ -54,7 +54,7 @@
             console.warn(`Failed to process ${providerName} methods:`, methodError);
           }
         }
-        
+        detectedProviders.add(providerName);
       }
     } catch (error) {
       console.warn(`Failed to relay metadata for provider ${providerName}:`, error);
@@ -83,7 +83,6 @@
         const { providerName } = event.data;
         acknowledgedProviders.add(providerName);
         console.log(`Acknowledgment received for provider: ${providerName}`);
-        detectedProviders.add(providerName);
       }
 
       if (event.data.type === "CALL_METHOD" || event.data.type === "SUBSCRIBE_EVENT" || event.data.type === "UNSUBSCRIBE_EVENT") {
@@ -175,7 +174,7 @@
   function checkForNewProviders() {
     providerNames.forEach(providerName => {
       try {
-        if (window[providerName] && !detectedProviders.has(providerName)) {
+        if (window[providerName] && !acknowledgedProviders.has(providerName)) {
           console.log("Provider detected:", providerName, window[providerName]);
           relayProviderMetadata(providerName);
         }
