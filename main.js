@@ -16,7 +16,7 @@
   ];
 
   // Replace '*' with the actual origin of your embedded app
-  const iframeOrigin = 'https://beta.satstermina.com'; // Update this to the iframe's origin
+  const iframeOrigin = 'https://beta.satsterminal.com'; // Update this to the iframe's origin
 
   // Helper function to get method names from any provider object
   function getProviderMethods(provider) {
@@ -54,7 +54,7 @@
             console.warn(`Failed to process ${providerName} methods:`, methodError);
           }
         }
-        detectedProviders.add(providerName);
+        
       }
     } catch (error) {
       console.warn(`Failed to relay metadata for provider ${providerName}:`, error);
@@ -83,6 +83,7 @@
         const { providerName } = event.data;
         acknowledgedProviders.add(providerName);
         console.log(`Acknowledgment received for provider: ${providerName}`);
+        detectedProviders.add(providerName);
       }
 
       if (event.data.type === "CALL_METHOD" || event.data.type === "SUBSCRIBE_EVENT" || event.data.type === "UNSUBSCRIBE_EVENT") {
@@ -196,7 +197,7 @@
       console.log("Stopping provider checks after timeout");
       clearInterval(providerCheckInterval);
     }
-  }, 60000);
+  }, 30000);
 
   // Clean up interval on page unload to prevent memory leaks
   window.addEventListener("beforeunload", () => clearInterval(providerCheckInterval));
