@@ -16,7 +16,7 @@
   ];
 
   // Replace '*' with the actual origin of your embedded app
-  const iframeOrigin = 'http://localhost:3000'; // Update this to the iframe's origin
+  const iframeOrigin = 'https://beta.satsterminal.com'; // Update this to the iframe's origin
 
   // Helper function to get method names from any provider object
   function getProviderMethods(provider) {
