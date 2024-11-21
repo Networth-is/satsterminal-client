@@ -16,7 +16,7 @@
   ];
 
   // Replace '*' with the actual origin of your embedded app
-  const iframeOrigin = 'http://localhost:3000'; // Update this to the iframe's origin
+  const iframeOrigin = 'https://beta.satstermina.com'; // Update this to the iframe's origin
 
   // Helper function to get method names from any provider object
   function getProviderMethods(provider) {
@@ -196,7 +196,7 @@
       console.log("Stopping provider checks after timeout");
       clearInterval(providerCheckInterval);
     }
-  }, 30000);
+  }, 60000);
 
   // Clean up interval on page unload to prevent memory leaks
   window.addEventListener("beforeunload", () => clearInterval(providerCheckInterval));
