@@ -1,5 +1,4 @@
 (function () {
-  console.log("Initializing provider communication bridge");
   const detectedProviders = new Set();
   const acknowledgedProviders = new Set();
   const eventListeners = {};
@@ -15,8 +14,7 @@
     "OrangeWalletProviders",
   ];
 
-  // Replace '*' with the actual origin of your embedded app
-  const iframeOrigin = 'https://beta.satsterminal.com'; // Update this to the iframe's origin
+  const iframeOrigin = 'https://beta.satsterminal.com'; 
 
   // Helper function to get method names from any provider object
   function getProviderMethods(provider) {
@@ -42,7 +40,7 @@
               { type: "PROVIDER_METADATA", providerName: "XverseProviders.BitcoinProvider", methods: bitcoinProviderMethods }
             );
           } catch (xverseError) {
-            console.warn(`Failed to process XverseProviders methods:`, xverseError);
+            // console.warn(`Failed to process XverseProviders methods:`, xverseError);
           }
         } else {
           try {
@@ -51,13 +49,13 @@
               { type: "PROVIDER_METADATA", providerName, methods: methodNames }
             );
           } catch (methodError) {
-            console.warn(`Failed to process ${providerName} methods:`, methodError);
+            // console.warn(`Failed to process ${providerName} methods:`, methodError);
           }
         }
         detectedProviders.add(providerName);
       }
     } catch (error) {
-      console.warn(`Failed to relay metadata for provider ${providerName}:`, error);
+      // console.warn(`Failed to relay metadata for provider ${providerName}:`, error);
     }
   }
 
@@ -67,14 +65,13 @@
       try {
         iframe.contentWindow.postMessage(message, iframeOrigin);
       } catch (iframeError) {
-        console.warn(`Failed to send message to iframe:`, iframeError);
+        // console.warn(`Failed to send message to iframe:`, iframeError);
       }
     });
   }
 
   // Listen for acknowledgments and method calls from iframe
   window.addEventListener("message", (event) => {
-    console.log("MESSAGE EVENT", event)
     try {
       if (!event.source || !event.data) return;
 
@@ -82,12 +79,10 @@
       if (event.data.type === "PROVIDER_ACKNOWLEDGMENT") {
         const { providerName } = event.data;
         acknowledgedProviders.add(providerName);
-        console.log(`Acknowledgment received for provider: ${providerName}`);
       }
 
       if (event.data.type === "CALL_METHOD" || event.data.type === "SUBSCRIBE_EVENT" || event.data.type === "UNSUBSCRIBE_EVENT") {
         const { providerName, methodName, args = [], requestId, eventName } = event.data;
-        console.log("CALL_METHOD - so we knwo waht's happening", event.data)
         try {
           let provider = window[providerName.split('.')[0]];
 
@@ -98,7 +93,6 @@
           if (event.data.type === "CALL_METHOD" && provider && typeof provider[methodName] === "function") {
             try {
               const result = provider[methodName](...args);
-              // Handle both Promise and non-Promise returns
               if (result instanceof Promise) {
                 result
                   .then((resolvedResult) => {
@@ -112,7 +106,7 @@
                 event.source.postMessage({ type: "METHOD_RESPONSE", requestId, result }, event.origin);
               }
             } catch (methodError) {
-              console.warn(`Error calling method ${methodName} on ${providerName}:`, methodError);
+              // console.warn(`Error calling method ${methodName} on ${providerName}:`, methodError);
               event.source.postMessage({ type: "METHOD_RESPONSE", requestId, error: methodError.message }, event.origin);
             }
           }
@@ -136,7 +130,7 @@
                         iframeOrigin
                       );
                     } catch (postError) {
-                      console.warn(`Failed to post event to iframe:`, postError);
+                      // console.warn(`Failed to post event to iframe:`, postError);
                     }
                   });
                 });
@@ -144,7 +138,7 @@
 
               eventListeners[providerName][eventName].add(event.source);
             } catch (subscribeError) {
-              console.warn(`Failed to subscribe to ${eventName} on ${providerName}:`, subscribeError);
+              // console.warn(`Failed to subscribe to ${eventName} on ${providerName}:`, subscribeError);
             }
           }
 
@@ -153,20 +147,18 @@
             eventListeners[providerName][eventName].delete(event.source);
 
             if (eventListeners[providerName][eventName].size === 0) {
-              // Optionally remove the event listener from the provider
-              // provider.removeListener(eventName, handler);
               delete eventListeners[providerName][eventName];
             }
           }
         } catch (providerError) {
-          console.warn(`Error processing provider ${providerName}:`, providerError);
+          // console.warn(`Error processing provider ${providerName}:`, providerError);
           if (event.data.type === "CALL_METHOD") {
             event.source.postMessage({ type: "METHOD_RESPONSE", requestId, error: providerError.message }, event.origin);
           }
         }
       }
     } catch (error) {
-      console.warn("Error processing message event:", error);
+      // console.warn("Error processing message event:", error);
     }
   });
 
@@ -175,11 +167,10 @@
     providerNames.forEach(providerName => {
       try {
         if (window[providerName] && !acknowledgedProviders.has(providerName)) {
-          console.log("Provider detected:", providerName, window[providerName]);
           relayProviderMetadata(providerName);
         }
       } catch (error) {
-        console.warn(`Failed to check provider ${providerName}:`, error);
+        // console.warn(`Failed to check provider ${providerName}:`, error);
       }
     });
   }
@@ -193,7 +184,6 @@
   // Timeout to stop checking for providers after 30 seconds
   setTimeout(() => {
     if (providerCheckInterval) {
-      console.log("Stopping provider checks after timeout");
       clearInterval(providerCheckInterval);
     }
   }, 30000);
